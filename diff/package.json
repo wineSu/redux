@@ -1,0 +1,23 @@
+{
+  "name": "vdom",
+  "version": "1.0.0",
+  "description": "vdom demo",
+  "main": "diff.js",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "start": "babel diff.jsx --out-file compiled.js",
+    "build": "webpack --mode production --module-bind js=babel-loader"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "babel-cli": "^6.23.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-transform-react-jsx": "^6.23.0",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1"
+  },
+  "author": "su zhe",
+  "license": "ISC"
+}

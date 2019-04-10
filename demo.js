@@ -48,6 +48,7 @@ function createStore (stateChanger) {
     state = stateChanger(state, action)
     listeners.forEach((listener) => listener())
   }
+  dispatch({})
   return { getState, dispatch, subscribe }
 }
 
@@ -66,19 +67,3 @@ store.dispatch({
 	type: "EYES_COLOR_LOG",
 	data: "green"
 })
-
-const state = {
-	a:1,
-	b:{
-		c: 1
-	}
-}
-const newstate = Object.assign({}, state, {
-	a:2,
-	b:{
-		...state.b,
-		c: 5
-	}
-})
-
-console.log(state)

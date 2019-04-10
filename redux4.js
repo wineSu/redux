@@ -1,4 +1,14 @@
-
+const combineReducers = reducers => {
+  return (state = {}, action) => {
+    return Object.keys(reducers).reduce(
+      (nextState, key) => {
+        nextState[key] = reducers[key](state[key], action);
+        return nextState;
+      },
+      {} 
+    );
+  };
+};
 /**
  * compose处理
  * var fun1 = function(arg){
@@ -163,7 +173,7 @@ let thunk = ({ dispatch, getState }) => next => action => {
     }
     return next(action)
 }
-const store = creatStore(changeState, applyMiddleware(thunk,looger));
+
 function changeState(states, action){
 	if(!states){
 		return {
@@ -188,6 +198,8 @@ function changeState(states, action){
  		break;
  	}
 }
+
+const store = creatStore(changeState, applyMiddleware(thunk,looger));
 
 let oldState = store.getState();
 store.subscribe(()=>{

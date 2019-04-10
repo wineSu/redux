@@ -51,7 +51,7 @@ function changeState(states, action){
 const store = creatStore(changeState);
 
 let oldState = store.getState();
-store.subscribe(()=>{
+store.subscribe((sta)=>{
 	const newState = store.getState();
 	render(newState,oldState);
 	oldState = newState;

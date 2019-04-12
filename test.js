@@ -1,14 +1,14 @@
-const combineReducers = reducers => {
-	//这里得到的state在creatstore之后合并为一个{a:{..},b:{...},...}这种形式   
-	return (state = {}, action) => {
-		let all = {}
-		for(let key in reducers){
-			//reducers[key](state[key], action);中state[key]拆开为对应各个reducer的state  最后返回整个集合
-			all[key] = reducers[key](state[key], action);
-		}
-		return all
-	};
-};
+//const combineReducers = reducers => {
+//	//这里得到的state在creatstore之后合并为一个{a:{..},b:{...},...}这种形式   
+//	return (state = {}, action) => {
+//		let all = {}
+//		for(let key in reducers){
+//			//reducers[key](state[key], action);中state[key]拆开为对应各个reducer的state  最后返回整个集合
+//			all[key] = reducers[key](state[key], action);
+//		}
+//		return all
+//	};
+//};
 /**
  * react或者vue中有diff算法    虽然我们的redux的state可以不做是否更新的判断   让框架去做diff算法（但是diff算法也是有个计算的过程，大量计算会消耗性能）
  * 所以我们需要对state直接作出判断是否有更新（react-redux）已经实现了更新判断，但是只能判断最外层
@@ -16,17 +16,7 @@ const combineReducers = reducers => {
  * redux-immutable 提供了  combineReducers为了合并最外层的数据   immutable.js和react-redux配合使用对react的state做判断渲染
  */
 
-//const combineReducers = reducers => {
-//return (state = {}, action) => {
-//  return Object.keys(reducers).reduce(
-//    (nextState, key) => {
-//      nextState[key] = reducers[key](state[key], action);
-//      return nextState;
-//    },
-//    {} 
-//  );
-//};
-//};
+
 
 
 
@@ -51,8 +41,9 @@ function applyMiddleware(arg1,arglog,arg2,arg3){
 //  newDispatch = a(b(dispatch));
 	
 	var b = arglog(middlewareAPI)(dispatch);
+
 	newDispatch = arg1(middlewareAPI)(b);
-	
+
     return {
       ...store,
       dispatch:newDispatch
@@ -106,6 +97,7 @@ let thunk = function({dispatch,getState}){
 		return function(action){
 
 			if (typeof action === 'function') {
+				console.log(dispatch)
 		        return action(dispatch, getState)
 		    }
 			
@@ -156,20 +148,44 @@ function changeState1(states=0, action){
 	  }
 }
 
+
+const combineReducers = reducers => {
+	return (state = {}, action) => {
+		let hasChanged = false
+	    const nextState = {}
+	    for(let key in reducers){
+	    	const reducer = reducers[key]
+	    	const previousStateForKey = state[key]
+	    	const nextStateForKey = reducer(previousStateForKey, action)
+	    	nextState[key] = nextStateForKey
+	    	hasChanged = hasChanged || nextStateForKey !== previousStateForKey
+	    }
+	    return hasChanged ? nextState : state
+	};
+};
+const combineReducerss = reducers => {
+	//这里得到的state在creatstore之后合并为一个{a:{..},b:{...},...}这种形式   
+	return (state = {}, action) => {
+		let all = {}
+		for(let key in reducers){
+			//reducers[key](state[key], action);中state[key]拆开为对应各个reducer的state  最后返回整个集合
+			all[key] = reducers[key](state[key], action);
+		}
+		return all
+	};
+};
 var allState = combineReducers({
 	a:changeState,
 	b:changeState1
 });
-
 const store = applyMiddleware(thunk,looger,creatStore,allState);
 
 store.subscribe(()=>{
 	const newState = store.getState();
-//	render(newState);
 })
 
 store.dispatch({type:'UPDATA',data:2})
-store.dispatch({type:'DECREMENT',data:2})
+store.dispatch({type:'DECREMENT',data:1})
 var common = function(dispatch){
 	console.log('2s之后会打印这个异步结果，请稍后...')
 	setTimeout(function(){
@@ -181,8 +197,10 @@ var common = function(dispatch){
 	},2000)
 }
 store.dispatch(common)
+
 function render(newdata){
 	var ele = document.getElementById('count')
 	ele.innerHTML = newdata.a.text.text2
 }
+
 

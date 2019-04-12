@@ -67,3 +67,4 @@ store.dispatch({
 	type: "EYES_COLOR_LOG",
 	data: "green"
 })
+

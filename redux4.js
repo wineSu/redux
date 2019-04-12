@@ -34,12 +34,14 @@ function compose(...funcs){
 	if(funcs.length === 1){
 		return funcs[0]
 	}
-	return funcs.reduce(function(a,b){
-		//a 上一次处理的返回值(无默认指定初始值参数时候a代表处理的数组第一个值，b从1开始计算下标) b当前处理的数据
-		return function(...args){
-			return a(b(...args))
-		}
-	})
+	return function(...args){
+		return funcs.reduce(function(a,b){
+			//a 上一次处理的返回值(无默认指定初始值参数时候a代表处理的数组第一个值，b从1开始计算下标) b当前处理的数据
+			
+				return a(b(...args))
+			
+		})
+	}
 }
 
 /**
